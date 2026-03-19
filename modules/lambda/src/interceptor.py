@@ -70,7 +70,9 @@ def lambda_handler(event, context):
         if headers is None:
             return _error_response("Request headers are missing from the event")
 
-        # Extract the Workload Token from the Authorization header
+        # Extract the Workload Token from the Authorization header.
+        # This token is originally an EntraID JWT that the AgentCore Runtime
+        # exchanged for an AWS Workload Token before forwarding to the Gateway.
         auth_header = headers.get("authorization") or headers.get("Authorization")
         workload_token = extract_bearer_token(auth_header)
         if not workload_token:
@@ -80,6 +82,8 @@ def lambda_handler(event, context):
             )
 
         # Extract target account and role from custom headers
+        # These are the requested AWS Account ID and the AWS IAM Identity Center
+        # Permission Set Role name that the user wants to assume.
         target_account_id = (
             headers.get("x-target-account-id")
             or headers.get("X-Target-Account-Id")
@@ -101,6 +105,10 @@ def lambda_handler(event, context):
         )
 
         # ── Step 2: Call GetResourceCredentials ──────────────────────────
+        # This API is the linchpin. It takes the user's Workload Token (verifying
+        # their EntraID mapped identity) and asks AWS IDC: "Does this specific user
+        # have permission to assume this specific TargetRole in this TargetAccount?"
+        # If yes, it returns temporary AWS STS Access Keys on the fly.
         client = boto3.client("bedrock-agentcore")
 
         credential_response = client.get_resource_credentials(
@@ -125,6 +133,10 @@ def lambda_handler(event, context):
         logger.info("Credentials obtained successfully — injecting into request")
 
         # ── Step 4: Build transformed request ────────────────────────────
+        # To fulfill the underlying MCP server requirements (which operate using
+        # standard AWS SDKs), we inject the newly generated STS keys directly 
+        # into the HTTP headers downstream. The remote MCP servers will extract
+        # these headers to execute actions isolated to this specific user.
         transformed_headers = {
             "x-aws-access-key-id": access_key_id,
             "x-aws-secret-access-key": secret_access_key,

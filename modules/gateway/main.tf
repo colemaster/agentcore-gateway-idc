@@ -7,9 +7,14 @@
 resource "aws_bedrockagentcore_gateway" "main" {
   gateway_name = var.gateway_name
 
-  # JWT-based authentication using EntraID OIDC
-  # The Gateway validates incoming JWT tokens against the EntraID OIDC
-  # discovery endpoint before forwarding requests to the interceptor.
+  # ── JWT-based authentication using EntraID OIDC ──
+  # The Gateway acts as the zero-trust boundary. Before it even touches the
+  # Lambda Interceptor, it mathematically validates the incoming JWT token 
+  # against the EntraID OIDC discovery endpoint.
+  # It specifically checks two cryptographic claims:
+  # 1. 'issuer' ensures the token was minted by your specific Entra Tenant.
+  # 2. 'audience' ensures the token was minted *for* this specific Gateway 
+  #    (matching the frontend App Registration Client ID).
   inbound_authorizer {
     type = "CUSTOM_JWT"
 
@@ -19,21 +24,18 @@ resource "aws_bedrockagentcore_gateway" "main" {
     }
   }
 
-  # Lambda interceptor configuration
-  # CRITICAL: pass_request_headers MUST be true so the interceptor receives
-  # the authorization, x-target-account-id, and x-target-role-name headers
-  # needed for JIT credential generation.
+  # ── Lambda Interceptor Configuration ──
+  # CRITICAL: `pass_request_headers` MUST be true.
+  # By default, API Gateways strip authorization headers and custom elements 
+  # for safety. Because our Lambda Interceptor fundamentally requires the 
+  # Authorization Bearer (Workload Token), `x-target-account-id`, and 
+  # `x-target-role-name` to programmatically execute the AWS IDC Credential
+  # Exchange, this flag instructs the Gateway to forward the raw, intact 
+  # HTTP Headers downstream to the Lambda payload.
   interceptor_configuration {
     interception_points  = ["REQUEST"]
     lambda_arn           = var.interceptor_lambda_arn
     pass_request_headers = true
-  }
-
-  tags = {
-    Name      = var.gateway_name
-    ManagedBy = "Terraform"
-    Component = "BedrockAgentCore"
-    Purpose   = "GatewayRouting"
   }
 
   lifecycle {

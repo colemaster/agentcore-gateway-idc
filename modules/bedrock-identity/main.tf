@@ -4,9 +4,22 @@
 # - Workload Identity for agent token exchange
 # - Credential Provider for JIT credential generation
 
-# IAM Identity Center Trusted Token Issuer
-# Configures IAM Identity Center to trust EntraID OIDC tokens
-# Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6
+# ── Trusted Token Issuer (AWS IAM Identity Center) ───────────────────────────
+# Requirements: 2.1, 2.2, 2.3, 17.1, 17.2, 17.3
+#
+# DEEP DIVE: The AWS Trusted Token Issuer (TTI) is the mathematical bridge
+# between Microsoft Entra ID and AWS IAM Identity Center (IDC).
+# 
+# How the Mapping Works:
+# When the AgentCore Runtime exchanges the Entra ID JWT for a Workload Token,
+# the TTI tells AWS IDC *how* to identify the invoking user. 
+#
+# Crucially, the TTI uses a specific claim from the incoming EntraID token 
+# (such as "sub", "email", or "preferred_username" / "upn") and matches it 
+# 1:1 against a physical user identity provisioned inside AWS IDC.
+# If Entra ID passes "sean@example.com" as the `email` claim, AWS IDC looks 
+# for an active user with that exact email address. If found, AWS successfully 
+# links the identity and permits JIT Temporary Credential generation!
 resource "aws_identitystore_trusted_token_issuer" "entra_tti" {
   instance_arn = var.idc_instance_arn
   name         = "EntraID-TTI-${var.workload_identity_name}"

@@ -28,13 +28,6 @@ resource "aws_lambda_function" "interceptor" {
     }
   }
 
-  tags = {
-    Name      = var.function_name
-    ManagedBy = "Terraform"
-    Component = "BedrockAgentCore"
-    Purpose   = "GatewayInterceptor"
-  }
-
   lifecycle {
     postcondition {
       condition     = self.qualified_arn != ""

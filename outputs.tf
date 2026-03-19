@@ -41,13 +41,13 @@ output "gateway_endpoint_url" {
 output "infrastructure_state" {
   description = "Complete infrastructure state with all resource ARNs"
   value = {
-    runtime_role_arn         = module.iam_roles.runtime_role_arn
-    interceptor_role_arn     = module.iam_roles.interceptor_role_arn
-    tti_arn                  = module.bedrock_identity.tti_arn
-    workload_identity_arn    = module.bedrock_identity.workload_identity_arn
-    credential_provider_arn  = module.bedrock_identity.credential_provider_arn
-    lambda_arn               = module.lambda_interceptor.lambda_arn
-    gateway_arn              = module.gateway.gateway_arn
-    gateway_endpoint_url     = module.gateway.gateway_endpoint_url
+    runtime_role_arn        = module.iam_roles.runtime_role_arn
+    interceptor_role_arn    = module.iam_roles.interceptor_role_arn
+    tti_arn                 = module.bedrock_identity.tti_arn
+    workload_identity_arn   = module.bedrock_identity.workload_identity_arn
+    credential_provider_arn = module.bedrock_identity.credential_provider_arn
+    lambda_arn              = module.lambda_interceptor.lambda_arn
+    gateway_arn             = module.gateway.gateway_arn
+    gateway_endpoint_url    = module.gateway.gateway_endpoint_url
   }
 }
