@@ -29,6 +29,8 @@ For the MCP server (e.g., `aws-api-mcp-server`) to securely execute actions in t
 Many off-the-shelf open-source MCP servers (such as [`awslabs/mcp`](https://github.com/awslabs/mcp/tree/main/src/aws-api-mcp-server) `aws-api-mcp-server` or `iam-mcp-server`) come with a severe HTTP mode warning: 
 > **"Single Customer Server... NOT designed for multi-tenant environments."**
 
+*(Note: Third-party SaaS MCP servers like the [GitLab MCP Server](https://docs.gitlab.com/user/gitlab_duo/model_context_protocol/mcp_server/) use standard HTTP transport natively (`https://gitlab.com/api/v4/mcp`) and manage their own authorization exchanges natively based on the AWS Bedrock Workload Provider mapping.)*
+
 ### Why does this warning exist?
 Standard `awslabs/mcp` servers initialize one **global** `boto3` SDK client upon startup by falling back to the host machine's default credentials (e.g., the EC2 Instance Profile). If multiple users hit this single HTTP server, the server will **ignore** the injected `x-aws-...` credentials and instead execute all actions using its own shared host role. This destroys tenant isolation and breaks the JIT credential propagation pipeline.
 

@@ -114,6 +114,11 @@ variable "mcp_targets" {
       name     = "aws-knowledge-mcp-server"
       endpoint = "https://internal-aws-knowledge-mcp.example.com/mcp"
       type     = "AWS_KNOWLEDGE_MCP"
+    },
+    {
+      name     = "gitlab-mcp-server"
+      endpoint = "https://gitlab.com/api/v4/mcp"
+      type     = "GITLAB_MCP"
     }
   ]
 }
