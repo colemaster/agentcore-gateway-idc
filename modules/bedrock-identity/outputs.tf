@@ -12,3 +12,8 @@ output "tti_arn" {
   description = "ARN of the IAM Identity Center Trusted Token Issuer"
   value       = aws_identitystore_trusted_token_issuer.entra_tti.arn
 }
+
+output "gitlab_credential_provider_id" {
+  description = "The logical ID/Name of the GitLab Outbound Connection"
+  value       = aws_bedrockagentcore_credential_provider.gitlab_provider.id
+}

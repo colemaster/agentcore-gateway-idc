@@ -116,3 +116,15 @@ variable "mcp_targets" {
     error_message = "All MCP target endpoints must be HTTPS URLs"
   }
 }
+
+variable "gitlab_connection_name" {
+  description = "The name for the underlying GitLab Credential Provider connection"
+  type        = string
+  default     = "GitLab-Connection"
+}
+
+variable "gitlab_client_id" {
+  description = "The Client ID of the registered GitLab application"
+  type        = string
+  sensitive   = true
+}

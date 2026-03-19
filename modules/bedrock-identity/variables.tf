@@ -42,3 +42,15 @@ variable "entra_oidc_issuer_url" {
     error_message = "Entra ID OIDC issuer URL must be a valid HTTPS URL"
   }
 }
+
+variable "gitlab_connection_name" {
+  description = "The name for the underlying GitLab Credential Provider connection"
+  type        = string
+  default     = "GitLab-Connection"
+}
+
+variable "gitlab_client_id" {
+  description = "The Client ID of the registered GitLab application"
+  type        = string
+  sensitive   = true
+}

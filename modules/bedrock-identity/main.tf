@@ -70,3 +70,25 @@ resource "aws_bedrockagentcore_credential_provider" "idc_provider" {
     }
   }
 }
+
+# ── GitLab Outbound Connection (OAuth2) ───────────────────────────
+# Requirements: 6.1, 6.2
+#
+# DEEP DIVE: This configures the outbound mapping for the Workload Identity.
+# While the gateway verifies inbound JWTs, the agent itself needs outbound
+# connections to target external APIs. We configure an OAuth2 flow mapping 
+# strictly to gitlab.com using the same email identity propagated to us.
+resource "aws_bedrockagentcore_credential_provider" "gitlab_provider" {
+  credential_provider_name = var.gitlab_connection_name
+  credential_provider_type = "OAUTH2"
+
+  oauth2_configuration {
+    provider_url = "https://gitlab.com"
+    client_id    = var.gitlab_client_id
+  }
+
+  # Ensure the Workload Identity exists before building outbound links
+  depends_on = [aws_bedrockagentcore_workload_identity.agent_identity]
+}
+
+

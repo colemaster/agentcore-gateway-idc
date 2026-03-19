@@ -34,3 +34,7 @@ mcp_targets = [
     type     = "AWS_KNOWLEDGE_MCP"
   }
 ]
+
+# GitLab Outbound Identity Configuration
+gitlab_client_id       = "gl_appid_example123456789"
+gitlab_connection_name = "GitLab-OAUTH2-Connection"

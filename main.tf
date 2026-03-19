@@ -44,6 +44,9 @@ module "bedrock_identity" {
   credential_provider_name = var.credential_provider_name
   idc_instance_arn         = var.idc_instance_arn
   entra_oidc_issuer_url    = var.entra_oidc_issuer_url
+
+  gitlab_client_id       = var.gitlab_client_id
+  gitlab_connection_name = var.gitlab_connection_name
 }
 
 # Phase 3: Lambda Interceptor

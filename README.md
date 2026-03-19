@@ -60,15 +60,13 @@ The Gateway validates the token. Because `pass_request_headers` is enabled, all 
 AWS IDC evaluates the user (mapped from the token) against the requested account/role. **If the user is authorized for that Permission Set in that Account**, AWS successfully returns AWS STS temporary SSO keys. The interceptor injects these keys (`x-aws-access-key-id`, `x-aws-secret-access-key`, `x-aws-session-token`) into the request, and the Gateway routes it to the MCP endpoint.
 For details on how AgentCore MCP Servers are integrated, the `streamable-http` transport requirements, and handling multi-tenant credential injection inside your targets, please read the **[MCP Server Requirements & Integration Guide](MCP.md)**.
 
-## External System Requirements
+## Integration Guides
 
-#### Microsoft Entra ID (Azure AD)
-1. **App Registration:** You must create an App Registration for your Next.js application. The `Client ID` from this app becomes your `entra_audience` variable.
-2. **Token Claims:** Ensure the App Registration is configured to emit the expected mapping claim (e.g., `email` or `upn`) in the OIDC JWT token.
+For deep-dive instructions on configuring the external identity providers and mapping them to the AgentCore Gateway, refer to the following dedicated documentation:
 
-#### AWS IAM Identity Center (IDC)
-1. **User Synchronization:** AWS IDC must be connected to your Entra ID tenant (typically via SCIM/SAML). The users logging into your frontend *must physically exist* in AWS IDC so they can be securely mapped.
-2. **Permission Sets & Account Assignments:** AWS IDC will only generate JIT credentials if the mapped user actually has access to the target. You must grant the users access to the specific AWS Accounts and IAM Roles (Permission Sets) they intend to select in the frontend dropdown. If a user requests an `account_id` + `sso role` they aren't assigned to in IDC, the credential generation will be denied.
+- **[Microsoft Entra ID Inbound Integrations](docs/ENTRAID.md)**: Details inbound authentication requirements, token claims, and App Registration logic.
+- **[AWS IAM Identity Center Integrations](docs/AWSIDC.md)**: Explains the Trusted Token Issuer configuration, SCIM synchronization, and target permission sets.
+- **[GitLab Outbound OAuth2 Integrations](docs/GITLAB.md)**: Explains configuring the Bedrock AgentCore Workload Identity outbound tracking to access `gitlab.com` resources securely on behalf of the user.
 
 ## Prerequisites
 
