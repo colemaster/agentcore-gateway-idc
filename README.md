@@ -58,7 +58,7 @@ When the Next.js frontend / AgentCore Runtime makes a request to the targeted Ag
 The Gateway validates the token. Because `pass_request_headers` is enabled, all original headers are pushed into the **Lambda Interceptor**. The Interceptor extracts the trio (`Authorization`, `x-target-account-id`, `x-target-role-name`) and triggers the `bedrock-agentcore:GetResourceCredentials` API. 
 
 AWS IDC evaluates the user (mapped from the token) against the requested account/role. **If the user is authorized for that Permission Set in that Account**, AWS successfully returns AWS STS temporary SSO keys. The interceptor injects these keys (`x-aws-access-key-id`, `x-aws-secret-access-key`, `x-aws-session-token`) into the request, and the Gateway routes it to the MCP endpoint.
-For details on how AgentCore MCP Servers are integrated, the `streamable-http` transport requirements, and handling multi-tenant credential injection inside your targets, please read the **[MCP Server Requirements & Integration Guide](MCP.md)**.
+For details on how AgentCore MCP Servers are integrated, the `streamable-http` transport requirements, and handling multi-tenant credential injection inside your targets, please read the **[MCP Server Requirements & Integration Guide](docs/MCP.md)**.
 
 ## Integration Guides
 
