@@ -8,6 +8,8 @@ This infrastructure enables secure, multi-account AWS resource access through a 
 
 ## Architecture
 
+![AgentCore Gateway Architecture](docs/agentcore_gateway_infographic.png)
+
 ```mermaid
 sequenceDiagram
     participant User as User (EntraID JWT)
